@@ -25,34 +25,8 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 const elements = require("./elements");
 
-Cypress.Commands.add('login_page', () => {
-    cy.visit('https://www.saucedemo.com/v1');
-});
-
-Cypress.Commands.add('login', (username, password) => {
-    cy.get(elements.user_name_input).type(username);
-    cy.get(elements.password_input).type(password);
-    cy.get(elements.login_btn).click();
-});
-
-Cypress.Commands.add('order_items_for', (filtro) => {
-    cy.get(elements.order_select_button).select(filtro);
-});
-
-Cypress.Commands.add('add_to_cart', (item_name) => {
-    cy.get(elements.inventory_item_name(item_name))
-    .parents(elements.inventory_itens)
-    .find(elements.add_cart_home_page_button).click();
-});
-
-Cypress.Commands.add('remove_from_cart', (item_name) => {
-    cy.get(elements.inventory_item_name(item_name))
-    .parents(elements.inventory_itens)
-    .find(elements.remove_cart_home_page_button).click();
-});
-
-Cypress.Commands.add('fill_checkout_information_fields', (first_name, last_name, postal_code) => {
-    cy.get(elements.first_name_input).type(first_name)
-    cy.get(elements.last_name_input).type(last_name)
-    cy.get(elements.postal_code_input).type(postal_code)
+Cypress.Commands.add('acessar_pagina_limpa', () => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.visit('/');
 });
