@@ -1,38 +1,73 @@
-const produtos = require("../../fixtures/produtos_descricao")
 const HomePage = require("../../pages/home_page")
 const ItemPage = require("../../pages/item_page")
 const CheckoutPage = require("../../pages/checkout_page")
+const elements = require("../../support/elements")
 
 const home_page = new HomePage
 const item_page = new ItemPage
 const checkout_page = new CheckoutPage
 
 describe('Adicionar produto ao carrinho', () => {
-
+    let item_titulo, item_preco_vista;
     beforeEach(() => {
         cy.acessar_pagina_limpa()
+        item_titulo = "Smart TV LG 43"
+        item_preco_vista = "1.709,05"
     });
 
-    it('deve acessar a página inicial do e-commerce sem erros', () => {});
+    it('deve permitir a pesquisa de um produto na barra de pesquisa e retornar resultados relevantes', () => {
+        home_page.pesquisar_por(item_titulo)
+        
+        cy.url().should('include','/pesquisa/Smart')
+        home_page.selecionar_primeiro_item().should('contain',item_titulo)
+    });
 
-    it('deve permitir a pesquisa de um produto na barra de pesquisa e retornar resultados relevantes', () => {});
+    it('deve carregar a página de detalhes do produto corretamente ao clicar em um item da listagem de resultados', () => {
+        home_page.pesquisar_por(item_titulo)
+        home_page.selecionar_primeiro_item().click()
 
-    it('deve exibir a página de resultados de pesquisa com o produto correto e sem regressões na funcionalidade', () => {});
+        item_page.titulo_item().should('contain', item_titulo)
+        cy.url().should('include','/produto/')
+        
+    });
 
-    it('deve carregar a página de detalhes do produto corretamente ao clicar em um item da listagem de resultados', () => {});
+    it('deve exibir o preço correto na página de detalhes do produto e verificar se não há mudanças inesperadas', () => {
+        home_page.pesquisar_por(item_titulo)
+        home_page.selecionar_primeiro_item().click()
 
-    it('deve exibir o preço correto na página de detalhes do produto e verificar se não há mudanças inesperadas', () => {});
+        item_page.preco_do_item().should('be.visible')
+    });
 
-    it('deve adicionar o produto ao carrinho e confirmar que o processo não foi impactado por mudanças recentes', () => {});
+    it('deve adicionar o produto ao carrinho e confirmar que o processo não foi impactado por mudanças recentes', () => {
+        home_page.pesquisar_por(item_titulo)
+        home_page.selecionar_primeiro_item().click()
 
-    it('deve exibir uma confirmação de adição ao carrinho, garantindo que o feedback visual permanece intacto', () => {});
+        item_page.adicionar_item()
+        cy.url().should('include', '/checkout/meu-carrinho')
+        item_page.numero_quantidade_itens_no_carrinho().should('have.text', '1')
+    });
 
-    it('deve acessar a página do carrinho de compras e verificar se todos os itens são exibidos corretamente', () => {});
+    it('deve acessar a página do carrinho de compras e verificar se todos os itens são exibidos corretamente', () => {
+        home_page.pesquisar_por(item_titulo)
+        home_page.selecionar_primeiro_item().click()
 
-    it('deve listar o produto no carrinho e validar que os detalhes do produto não foram alterados inadvertidamente', () => {});
+        item_page.adicionar_item()
+        cy.url().should('include', '/checkout/meu-carrinho')
+        
+        item_page.numero_quantidade_itens_no_carrinho().should('have.text','1')
+        checkout_page.lista_itens_no_carrinho()
+            .first()
+            .should('contain', item_titulo);
+    });
+  
+    it('deve exibir o preço correto no carrinho, confirmando que não houve regressões nos cálculos de preço', () => {    
+        home_page.pesquisar_por(item_titulo);
+        home_page.selecionar_primeiro_item().click();
 
-    it('deve exibir o preço correto no carrinho, confirmando que não houve regressões nos cálculos de preço', () => {});
+        item_page.preco_do_item().should('contain', item_preco_vista)
+        item_page.adicionar_item()
 
-    
-});
+        checkout_page.valor_total_a_vista().should('contain', item_preco_vista);
+    });
+});   
   
