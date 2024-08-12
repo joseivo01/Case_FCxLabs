@@ -32,7 +32,7 @@ Antes de começar, certifique-se de que o ambiente de desenvolvimento esteja pre
 Para obter uma cópia local do código-fonte, execute o seguinte comando no terminal:
 
 ```bash
-git clone https://github.com/joseivo01/case_fcxlabs.git
+git clone https://github.com/joseivo01/Case_FCxLabs.git
 ```
 
 Navegue até o diretório do projeto clonado:
