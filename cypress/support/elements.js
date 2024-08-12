@@ -10,6 +10,6 @@ module.exports = {
     fechar_pedido_btn_janela: 'button[data-testid="button-close-order"]',
 
 
-    // Checkout Page
+    // Checkout Page.
     fechar_pedido_btn: 'button[data-testid="box-details-info-button-success"]',
 }
